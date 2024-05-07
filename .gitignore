@@ -22,3 +22,39 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Compiled class file
+*.class
+
+# Log files
+*.log
+
+# IntelliJ project files
+.idea/
+
+# Compiled Java bytecode
+target/
+
+# Spring Boot generated files
+*.jar
+*.war
+*.ear
+
+# Local configuration files
+application.properties
+application.yml
+
+# macOS system files
+.DS_Store
+
+# Windows thumbnail cache files
+Thumbs.db
+
+# Maven specific
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Gradle specific
+.gradle/
+build/
+
