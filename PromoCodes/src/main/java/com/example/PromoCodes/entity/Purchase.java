@@ -1,6 +1,7 @@
 package com.example.PromoCodes.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,8 @@ public class Purchase {
     @Column(nullable = false, scale = 2, precision = 10)
     private BigDecimal regularPrice;
 
-    @Column(nullable = true, scale = 2, precision = 10)
+    @Column(scale = 2, precision = 10)
+    @Min(value = 0)
     private BigDecimal discountApplied;
 
     @Column(nullable = false, scale = 2, precision = 10)

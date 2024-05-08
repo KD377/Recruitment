@@ -25,6 +25,7 @@ public class Product {
 
     private String description;
 
+    @Column(nullable = false, precision = 10, scale = 2)
     @Min(value = 0, message = "Price must be 0 or greater")
     private BigDecimal price;
 
