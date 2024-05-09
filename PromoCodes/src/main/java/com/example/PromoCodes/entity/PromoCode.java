@@ -1,9 +1,10 @@
 package com.example.PromoCodes.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -22,7 +23,8 @@ public class PromoCode {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    @Size(min=3,max=24)
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9]{3,24}$", message = "Code must be alphanumeric and 3-24 characters long without whitespaces.")
     private String code;
 
     @Column(nullable = false)
@@ -37,9 +39,10 @@ public class PromoCode {
     private Currency currency;
 
     @Column(nullable = false)
-    @Min(value = 0, message = "amount of max usages must be positive")
+    @Min(value = 1, message = "amount of max usages must be positive")
     private int maxUsages;
 
     @Column(nullable = false)
+    @JsonIgnore
     private int usages = 0;
 }

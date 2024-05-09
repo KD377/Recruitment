@@ -1,7 +1,7 @@
 package com.example.PromoCodes.controller;
 
-import com.example.PromoCodes.entity.Product;
-import com.example.PromoCodes.service.ProductService;
+import com.example.PromoCodes.entity.PromoCode;
+import com.example.PromoCodes.service.PromoCodeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,37 +13,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 
 @RestController
-@RequestMapping("api/products")
-public class ProductController {
+@RequestMapping("api/promo-code")
+public class PromoCodeController {
 
-    private final ProductService productService;
+    private final PromoCodeService promoCodeService;
 
     @Autowired
-    public ProductController(ProductService productService){
-        this.productService = productService;
+    public PromoCodeController(PromoCodeService promoCodeService) {
+        this.promoCodeService = promoCodeService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<List<PromoCode>> getAllPromoCodes() {
+        List<PromoCode> promoCodes = promoCodeService.getAllPromoCodes();
+        return ResponseEntity.ok(promoCodes);
     }
 
-    @PostMapping
-    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product) {
-        // TAKE CARE OF WRONG Currency
-        Product createdProduct = productService.addProduct(product);
-        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+    @PostMapping ResponseEntity<?> addPromoCode(@RequestBody @Valid PromoCode promoCode) {
+        PromoCode newPromoCode = promoCodeService.createPromoCode(promoCode);
+        return ResponseEntity.ok(newPromoCode);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id,@Valid @RequestBody Product changedProduct){
-        return productService.updateProduct(id, changedProduct)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/{code}")
+    public ResponseEntity<?> getPromoCodeDetailsByCode(@PathVariable String code) {
+        Optional<PromoCode> promoCode = promoCodeService.getPromoCodeByCode(code);
+        return promoCode.map(promo -> ResponseEntity.ok((Object) promo))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("PromoCode: " + code + " does not exist"));
     }
+
+
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -63,4 +67,5 @@ public class ProductController {
         response.put("errors", errors);
         return response;
     }
+
 }
