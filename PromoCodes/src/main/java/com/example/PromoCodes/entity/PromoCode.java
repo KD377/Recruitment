@@ -1,6 +1,6 @@
 package com.example.PromoCodes.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -39,10 +39,10 @@ public class PromoCode {
     private Currency currency;
 
     @Column(nullable = false)
-    @Min(value = 1, message = "amount of max usages must be positive")
+    @Min(value = 0, message = "amount of max usages must be positive")
     private int maxUsages;
 
     @Column(nullable = false)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int usages = 0;
 }

@@ -22,6 +22,10 @@ public class ProductService {
         return this.productRepository.findAll();
     }
 
+    public Optional<Product> findProductById(Long id) {
+        return productRepository.findById(id);
+    }
+
     @Transactional
     public Product addProduct(Product product) {
         return productRepository.save(product);
