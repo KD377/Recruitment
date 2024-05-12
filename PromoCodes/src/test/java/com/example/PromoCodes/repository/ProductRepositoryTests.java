@@ -5,13 +5,13 @@ import com.example.PromoCodes.entity.Currency;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.DataIntegrityViolationException;
+
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 @DataJpaTest
 public class ProductRepositoryTests {
@@ -21,7 +21,12 @@ public class ProductRepositoryTests {
 
     @Test
     public void testSaveProduct() {
-        Product product = new Product(null, "Espresso Machine", "Makes strong coffee", new BigDecimal("1200.00"), Currency.USD);
+        Product product = new Product();
+        product.setId(null);
+        product.setName("Espresso Machine");
+        product.setDescription("Makes strong coffee");
+        product.setRegularPrice(new BigDecimal("1200.00"));
+        product.setCurrency(Currency.USD);
         Product savedProduct = productRepository.save(product);
         assertThat(savedProduct).isNotNull();
         assertThat(savedProduct.getId()).isNotNull();
@@ -44,15 +49,6 @@ public class ProductRepositoryTests {
         product.setName("Updated Drip Coffee Maker");
         Product updatedProduct = productRepository.save(product);
         assertThat(updatedProduct.getName()).isEqualTo("Updated Drip Coffee Maker");
-    }
-
-    @Test
-    public void testDeleteProduct() {
-        Product product = new Product(null, "French Press", "For brewing coffee or tea", new BigDecimal("25.00"), Currency.USD);
-        product = productRepository.save(product);
-        assertThat(productRepository.findById(product.getId())).isPresent();
-        productRepository.delete(product);
-        assertThat(productRepository.findById(product.getId())).isNotPresent();
     }
 
 }

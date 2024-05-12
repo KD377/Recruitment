@@ -63,7 +63,8 @@ public class PromoCodeRepositoryTests {
     public void findByCodeTest() {
         PromoCode promoCode = new PromoCode();
         promoCode.setCode("LATO123");
-        promoCode.setExpirationDate(new Date());
+        Date date =new Date();
+        promoCode.setExpirationDate(date);
         promoCode.setDiscountValue(BigDecimal.valueOf(45.00));
         promoCode.setCurrency(Currency.USD);
         promoCode.setMaxUsages(10);
@@ -73,13 +74,30 @@ public class PromoCodeRepositoryTests {
         Optional<PromoCode> foundPromoCode = promoCodeRepository.findByCode("LATO123");
 
         assertTrue(foundPromoCode.isPresent());
-        PromoCode retrieved = foundPromoCode.get();
-        assertEquals("LATO123", retrieved.getCode());
-        assertEquals(BigDecimal.valueOf(45.00).setScale(2), retrieved.getDiscountValue().setScale(2));
-        assertEquals(Currency.USD, retrieved.getCurrency());
-        assertEquals(10, retrieved.getMaxUsages());
-        assertEquals(0, retrieved.getUsages());
+        PromoCode promo = foundPromoCode.get();
+        assertEquals("LATO123", promo.getCode());
+        assertEquals(date,promo.getExpirationDate());
+        assertEquals(BigDecimal.valueOf(45.00).setScale(2), promo.getDiscountValue().setScale(2));
+        assertEquals(Currency.USD, promo.getCurrency());
+        assertEquals(10, promo.getMaxUsages());
+        assertEquals(0, promo.getUsages());
 
+    }
+
+
+    @Test
+    public void testIncrementUsages() {
+
+        PromoCode promoCode = new PromoCode();
+        assertEquals(0, promoCode.getUsages());
+
+        promoCode.incrementUsages();
+
+        assertEquals(1, promoCode.getUsages());
+
+        promoCode.incrementUsages();
+
+        assertEquals(2, promoCode.getUsages());
     }
 
 }
