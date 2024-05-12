@@ -2,6 +2,7 @@ package com.example.PromoCodes.service;
 
 import com.example.PromoCodes.dto.DiscountResult;
 import com.example.PromoCodes.dto.PurchaseResult;
+import com.example.PromoCodes.dto.SalesReport;
 import com.example.PromoCodes.entity.Product;
 import com.example.PromoCodes.entity.Purchase;
 import com.example.PromoCodes.repository.PurchaseRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -21,7 +23,7 @@ public class PurchaseService {
     private final PurchaseRepository purchaseRepository;
 
     @Autowired
-    public PurchaseService(DiscountService discountService, ProductService productService, PurchaseRepository purchaseRepository,PromoCodeService promoCodeService) {
+    public PurchaseService(DiscountService discountService, PurchaseRepository purchaseRepository,PromoCodeService promoCodeService) {
         this.discountService = discountService;
         this.promoCodeService = promoCodeService;
         this.purchaseRepository = purchaseRepository;
@@ -42,5 +44,9 @@ public class PurchaseService {
 
         return new PurchaseResult(purchase,discountResult.getMessage());
 
+    }
+
+    public List<SalesReport> generateSalesReport() {
+        return purchaseRepository.calculateSalesReport();
     }
 }
