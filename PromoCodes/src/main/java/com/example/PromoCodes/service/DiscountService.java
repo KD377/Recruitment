@@ -3,7 +3,6 @@ package com.example.PromoCodes.service;
 import com.example.PromoCodes.dto.DiscountResult;
 import com.example.PromoCodes.entity.Product;
 import com.example.PromoCodes.entity.PromoCode;
-import com.example.PromoCodes.exception.ProductNotFoundException;
 import com.example.PromoCodes.exception.PromoCodeNotFoundException;
 import com.example.PromoCodes.repository.PromoCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +22,7 @@ public class DiscountService {
         this.promoCodeRepository = promoCodeRepository;
     }
 
-    public DiscountResult calculatePriceAfterDiscount(String code, Optional<Product> productFound) {
-        Product product;
-        if (productFound.isPresent()){
-            product = productFound.get();
-        }
-        else {
-            throw new ProductNotFoundException("Product not found");
-        }
+    public DiscountResult calculateDiscountedPrice(String code, Product product) {
 
         Optional<PromoCode> foundPromoCode = promoCodeRepository.findByCode(code);
 
@@ -41,26 +33,26 @@ public class DiscountService {
         PromoCode promoCode = foundPromoCode.get();
 
         if (promoCode.getExpirationDate().before(new Date())) {
-            return new DiscountResult(product.getPrice(),"Promo code expired");
+            return new DiscountResult(product.getRegularPrice(),new BigDecimal(0),"Promo code expired",false);
         }
 
         if (!promoCode.getCurrency().equals(product.getCurrency())) {
-            return new DiscountResult(product.getPrice(),"Promo code is not applicable for this product. Currencies does not match. Product currency: " + product.getCurrency()+ " PromoCode currency: "+ promoCode.getCurrency());
+            return new DiscountResult(product.getRegularPrice(),new BigDecimal(0),"Promo code is not applicable for this product. Currencies does not match. Product currency: " + product.getCurrency()+ " PromoCode currency: "+ promoCode.getCurrency(),false);
         }
 
         if (promoCode.getUsages() >= promoCode.getMaxUsages()) {
-            return new DiscountResult(product.getPrice(),"Max usages reached. Promo code is no longer valid");
+            return new DiscountResult(product.getRegularPrice(),new BigDecimal(0),"Max usages reached. Promo code is no longer valid",false);
         }
 
 
-        BigDecimal discountedPrice = product.getPrice();
+        BigDecimal discountedPrice = product.getRegularPrice();
         if (promoCode.getDiscountValue() != null) {
-            discountedPrice = product.getPrice().subtract(promoCode.getDiscountValue());
+            discountedPrice = product.getRegularPrice().subtract(promoCode.getDiscountValue());
         }
 
         discountedPrice = discountedPrice.max(BigDecimal.ZERO);
 
-        return new DiscountResult(discountedPrice, "Discount applied successfully.");
+        return new DiscountResult(discountedPrice,promoCode.getDiscountValue(), "Discount applied successfully.",true);
 
 
     }

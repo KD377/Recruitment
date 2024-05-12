@@ -1,19 +1,16 @@
 package com.example.PromoCodes.dto;
 
+import com.example.PromoCodes.entity.Purchase;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class DiscountResult {
-
-    private BigDecimal finalPrice;
-    private BigDecimal discountAmount;
+@Setter
+public class PurchaseResult {
+    private Purchase purchase;
     private String message;
-    private boolean isDiscountSuccesful;
-
 }
