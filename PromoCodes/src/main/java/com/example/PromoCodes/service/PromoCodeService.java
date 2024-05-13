@@ -6,9 +6,6 @@ import com.example.PromoCodes.repository.PromoCodeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Calendar;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,17 +28,6 @@ public class PromoCodeService {
     }
 
     public PromoCode createPromoCode(PromoCode promoCode) {
-
-        Date expirationDate = promoCode.getExpirationDate();
-        if (expirationDate != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(expirationDate);
-            calendar.set(Calendar.HOUR_OF_DAY, 23);
-            calendar.set(Calendar.MINUTE, 59);
-            calendar.set(Calendar.SECOND, 59);
-            calendar.set(Calendar.MILLISECOND, 999);
-            promoCode.setExpirationDate(calendar.getTime());
-        }
 
         return promoCodeRepository.save(promoCode);
     }

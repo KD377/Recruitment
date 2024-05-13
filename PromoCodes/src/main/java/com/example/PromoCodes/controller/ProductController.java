@@ -31,7 +31,6 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<?> createProduct(@Valid @RequestBody Product product) {
-        // TAKE CARE OF WRONG Currency
         Product createdProduct = productService.addProduct(product);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }

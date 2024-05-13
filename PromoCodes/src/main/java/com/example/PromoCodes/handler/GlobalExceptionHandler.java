@@ -39,15 +39,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+    public ResponseEntity<Map<String,Object>> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        Map<String,Object> response = new HashMap<>();
         if (ex.getRootCause() != null && ex.getRootCause().getMessage().contains("CONSTRAINT_INDEX_5")) {
+            response.put("error","Bad request");
+            response.put("status",HttpStatus.BAD_REQUEST.value());
+            response.put("message","Promo code already exists. Please use a different code.");
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("Promo code already exists. Please use a different code.");
+                    .body(response);
         }
+        response.put("error","Internal server error");
+        response.put("status",HttpStatus.INTERNAL_SERVER_ERROR.value());
+        response.put("message","Internal server error occurred.");
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Internal server error occurred.");
+                .body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
